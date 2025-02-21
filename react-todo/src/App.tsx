@@ -17,7 +17,7 @@ function App() {
       <Router>
             <div>
 
-              <ToDoNav/>
+              {/*<ToDoNav/>*/}
                 <Routes>
                     <Route path="/" element={<Todo />} />
                     <Route path="/Monday" element={<MondayToDo />} />
