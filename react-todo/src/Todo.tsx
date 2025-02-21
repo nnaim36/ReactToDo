@@ -5,16 +5,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import MondayToDo from "./MondayToDo";
 import TuesdayToDo from "./TuesdayToDo";
 
+import { FaChevronCircleDown } from "react-icons/fa";
+import { FaChevronCircleUp } from "react-icons/fa";
+import { FaRegTrashCan } from "react-icons/fa6";
+
 function Todo(){
     const [taskList, setTaskList] = useState<string[]>([]);
     const [task, setTask] = useState<string>("");
+    const [tempTask,setTempTask] = useState<string>("");
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
     function updateTask(event:any){
         setTask(event.target.value);
-        console.log(task);
     }
-    function edit(){
 
+    function updateTempTask(event: any) {
+        setTempTask(event.target.value);
+    }
+
+    function editTask(index:number){
+        setIsEditing(true);
+        setEditIndex(index);
+        setTempTask(taskList[index]);
     }
     function deleteTask(index: number){
         const newTaskList = taskList.filter((_,i) => i !== index);
@@ -47,6 +60,15 @@ function Todo(){
     function clearTask(){
         setTaskList([]);
     }
+    function saveEditedTask() {
+        if (editIndex !== null) {
+            const updatedTasks = [...taskList];
+            updatedTasks[editIndex] = tempTask;
+            setTaskList(updatedTasks);
+        }
+        setIsEditing(false);
+        setEditIndex(null);
+    }
 
 
     return(
@@ -64,18 +86,20 @@ function Todo(){
             />
             <button className="btn btn-success" onClick={addTask}>Submit</button>
             </div>
+            {isEditing && (
             <div className="edit-task-section">
                 <input 
                     type="text" 
-                    placeholder="Enter in a new task"
-                    value = {task}
-                    onChange={updateTask}
+                    
+                    value = {tempTask}
+                    onChange={updateTempTask}
                     className="form-control"
                     id="edit-task"
                 />
-                <button className="btn btn-warning" onClick={addTask}>Update</button>
-                <button className="btn btn-danger" onClick={addTask}>Cancel</button>
+                <button className="btn btn-warning" onClick={saveEditedTask}>Update</button>
+                <button className="btn btn-danger" onClick={() => setIsEditing(false)}>Cancel</button>
             </div>
+            )}
 
             <div>
                 <button onClick={clearTask}>Clear</button>
@@ -84,11 +108,26 @@ function Todo(){
                 <ul className="task-list">
                     {taskList.map((t,index) => (
                         <li key={index} className="task-text-list">
-                            <button onClick={() => downGradeTask(index)}>down</button>
-                            <button onClick={() => upgradeTask(index)}>up</button>
-                            <span className="task-text">{t}</span>
-                            <button className="btn btn-warning">Edit</button>
-                            <button className="btn btn-danger" onClick={() => deleteTask(index)} >Delete</button>
+                            <div className="task-move-buttons">
+                                <button onClick={() => downGradeTask(index)}
+                                    
+                                    >
+                                    <FaChevronCircleDown size={30}/>
+                                </button>
+                                <button onClick={() => upgradeTask(index)}
+                                    >
+                                        <FaChevronCircleUp size={30}/>
+                                </button>
+
+                            </div>
+
+                            <span className="task-text text-lg-left">{t}</span>
+                            <div className="task-manipulation-buttons">
+                                <button className="btn btn-warning" onClick={() => editTask(index)}>Edit</button>
+                                <button className="btn btn-danger" onClick={() => deleteTask(index)} >
+                                    <FaRegTrashCan />
+                                </button>
+                            </div>
                         </li>
                     ))
                     
