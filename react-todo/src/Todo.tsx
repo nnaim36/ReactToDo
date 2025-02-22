@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ToDoNav from "./ToDoNav";
@@ -5,11 +6,37 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import MondayToDo from "./MondayToDo";
 import TuesdayToDo from "./TuesdayToDo";
 
+import { useSelector, useDispatch } from "react-redux";
+import {addTask, deleteTask} from "./reducer/thisDayReducer"
+import { RootState, AppDispatch } from "./store/index";
+
+
 import { FaChevronCircleDown } from "react-icons/fa";
 import { FaChevronCircleUp } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 
+
+//const dispatch = useDispatch<AppDispatch>();
+
 function Todo(){
+    
+    const dispatch = useDispatch<AppDispatch>();
+    //const dispatch = useDispatch();
+    //const todos = useSelector((state: RootState) => state.thisDayReducer.todos);
+    /*const currentTask = useSelector((state: RootState) => state.thisDayReducer.currentTask);*/
+    
+    
+    /*
+    const handleAddTask = () => {
+        dispatch(addTask());
+    };
+
+      const handleDeleteTask = (index: number) => {
+        dispatch(deleteTask(index));
+    };
+    */
+    
+
     const [taskList, setTaskList] = useState<string[]>([]);
     const [task, setTask] = useState<string>("");
     const [tempTask,setTempTask] = useState<string>("");
@@ -29,11 +56,13 @@ function Todo(){
         setEditIndex(index);
         setTempTask(taskList[index]);
     }
+    /*
     function deleteTask(index: number){
         const newTaskList = taskList.filter((_,i) => i !== index);
 
         setTaskList(newTaskList)
     }
+    */
     function upgradeTask(index: number){
         const copylist = [...taskList]
         
@@ -51,12 +80,14 @@ function Todo(){
             setTaskList(copylist);
         }
     }
+    /*
     function addTask(){
         setTaskList((prevTasks) => [...prevTasks,task]);
         console.log(taskList);
 
         setTask("");
     }
+    */
     function clearTask(){
         setTaskList([]);
     }
@@ -84,7 +115,7 @@ function Todo(){
                 className="form-control"
                 id="text-new-task"
             />
-            <button className="btn btn-success" onClick={addTask}>Submit</button>
+            <button className="btn btn-success" onClick={()=>setIsEditing(true)}>Submit</button>
             </div>
             {isEditing && (
             <div className="edit-task-section">
@@ -102,13 +133,14 @@ function Todo(){
             )}
 
             <div>
-                <button onClick={clearTask}>Clear</button>
+                <button className="btn btn-danger" onClick={clearTask}>Clear</button>
             </div>
             <div>
                 <ul className="task-list">
                     {taskList.map((t,index) => (
                         <li key={index} className="task-text-list">
                             <div className="task-move-buttons">
+                                {/*
                                 <button onClick={() => downGradeTask(index)}
                                     
                                     >
@@ -118,13 +150,19 @@ function Todo(){
                                     >
                                         <FaChevronCircleUp size={30}/>
                                 </button>
-
+                                */}
+                                <FaChevronCircleUp size={25} 
+                                onClick={() => upgradeTask(index)}
+                                />
+                                <FaChevronCircleDown size={25} 
+                                onClick={() => downGradeTask(index)}
+                                />
                             </div>
 
                             <span className="task-text text-lg-left">{t}</span>
                             <div className="task-manipulation-buttons">
-                                <button className="btn btn-warning" onClick={() => editTask(index)}>Edit</button>
-                                <button className="btn btn-danger" onClick={() => deleteTask(index)} >
+                                <button className="btn btn-warning btn-lg" onClick={() => editTask(index)}>Edit</button>
+                                <button className="btn btn-danger btn-lg" onClick={()=>setIsEditing(true)} >
                                     <FaRegTrashCan />
                                 </button>
                             </div>
