@@ -10,23 +10,41 @@ const initialState: TodoState = {
     currentTask: '',
 }
 
-const thisDaySlicer = createSlice({
+const thisDaySlice = createSlice({
     name:"genTodo",
     initialState,
     reducers:{
-        addTask(state){
-            if (state.currentTask.trim() !== ""){
-                state.todos.push(state.currentTask);
-                state.currentTask = "";
+        addTask: (state, action: PayloadAction<string>) => {
+            state.todos.push(action.payload);
+        },
+        deleteTask: (state, action: PayloadAction<number>) => {
+            state.todos.splice(action.payload, 1);
+        },
+        upgradeTask: (state, action:PayloadAction<number>) => {
+            const index = action.payload;
+
+            if(index >0){
+                const temp = state.todos[index];
+                state.todos[index] = state.todos[index - 1];
+                state.todos[index - 1] = temp;
+                
             }
         },
-        deleteTask(state,action:PayloadAction<number>){
-            state.todos =state.todos.filter((_, i) => i !==action.payload)
-        },
+        downgradeTask:(state, action:PayloadAction<number>) =>{
+            const index = action.payload;
 
+            if (index <state.todos.length -1){
+                const temp = state.todos[index];
+                state.todos[index] = state.todos[index +1];
+                state.todos[index +1] = temp;
+            }
+        },
+        clearTasks:(state) =>{
+            state.todos = [];
+        },
     },
     
 });
 
-export const { addTask,deleteTask} = thisDaySlicer.actions;
-export default thisDaySlicer.reducer;
+export const { addTask,deleteTask,upgradeTask,downgradeTask, clearTasks} = thisDaySlice.actions;
+export default thisDaySlice.reducer;

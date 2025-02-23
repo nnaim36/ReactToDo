@@ -7,8 +7,9 @@ import MondayToDo from "./MondayToDo";
 import TuesdayToDo from "./TuesdayToDo";
 
 import { useSelector, useDispatch } from "react-redux";
-import {addTask, deleteTask} from "./reducer/thisDayReducer"
-import { RootState, AppDispatch } from "./store/index";
+import {addTask, deleteTask,upgradeTask,downgradeTask,clearTasks} from "./reducer/thisDayReducer"
+import { RootState } from './store'
+
 
 
 import { FaChevronCircleDown } from "react-icons/fa";
@@ -20,21 +21,32 @@ import { FaRegTrashCan } from "react-icons/fa6";
 
 function Todo(){
     
-    const dispatch = useDispatch<AppDispatch>();
-    //const dispatch = useDispatch();
-    //const todos = useSelector((state: RootState) => state.thisDayReducer.todos);
-    /*const currentTask = useSelector((state: RootState) => state.thisDayReducer.currentTask);*/
+    const dispatch = useDispatch();
+    const todos = useSelector((state: RootState) => state.thisDayReducer.todos);
+    const currentTask = useSelector((state: RootState) => state.thisDayReducer.currentTask);
     
     
-    /*
+    
     const handleAddTask = () => {
-        dispatch(addTask());
+        if (task.trim() !== "") {
+            dispatch(addTask(task));
+            setTask(""); // clear the input after dispatching
+          }
     };
 
-      const handleDeleteTask = (index: number) => {
+    const handleDeleteTask = (index: number) => {
         dispatch(deleteTask(index));
     };
-    */
+    
+    const handleUpgradeTask = (index:number) => {
+        dispatch(upgradeTask(index));
+    }
+    const handleDowngradeTask = (index:number) =>{
+        dispatch(downgradeTask(index));
+    }
+    const handleClearTasks = () => {
+        dispatch(clearTasks());
+    }
     
 
     const [taskList, setTaskList] = useState<string[]>([]);
@@ -63,6 +75,8 @@ function Todo(){
         setTaskList(newTaskList)
     }
     */
+
+    /*
     function upgradeTask(index: number){
         const copylist = [...taskList]
         
@@ -72,6 +86,9 @@ function Todo(){
         }
 
     }
+    */
+
+    /*
     function downGradeTask(index:number){
         const copylist = [...taskList]
 
@@ -80,6 +97,8 @@ function Todo(){
             setTaskList(copylist);
         }
     }
+    */
+
     /*
     function addTask(){
         setTaskList((prevTasks) => [...prevTasks,task]);
@@ -88,9 +107,13 @@ function Todo(){
         setTask("");
     }
     */
+
+    /*
     function clearTask(){
         setTaskList([]);
     }
+    */
+
     function saveEditedTask() {
         if (editIndex !== null) {
             const updatedTasks = [...taskList];
@@ -115,7 +138,7 @@ function Todo(){
                 className="form-control"
                 id="text-new-task"
             />
-            <button className="btn btn-success" onClick={()=>setIsEditing(true)}>Submit</button>
+            <button className="btn btn-success" onClick={()=>handleAddTask()}>Submit</button>
             </div>
             {isEditing && (
             <div className="edit-task-section">
@@ -133,11 +156,11 @@ function Todo(){
             )}
 
             <div>
-                <button className="btn btn-danger" onClick={clearTask}>Clear</button>
+                <button className="btn btn-danger" onClick={handleClearTasks}>Clear</button>
             </div>
             <div>
                 <ul className="task-list">
-                    {taskList.map((t,index) => (
+                    {todos.map((t,index) => (
                         <li key={index} className="task-text-list">
                             <div className="task-move-buttons">
                                 {/*
@@ -152,17 +175,17 @@ function Todo(){
                                 </button>
                                 */}
                                 <FaChevronCircleUp size={25} 
-                                onClick={() => upgradeTask(index)}
+                                onClick={() => handleUpgradeTask(index)}
                                 />
                                 <FaChevronCircleDown size={25} 
-                                onClick={() => downGradeTask(index)}
+                                onClick={() => handleDowngradeTask(index)}
                                 />
                             </div>
 
                             <span className="task-text text-lg-left">{t}</span>
                             <div className="task-manipulation-buttons">
                                 <button className="btn btn-warning btn-lg" onClick={() => editTask(index)}>Edit</button>
-                                <button className="btn btn-danger btn-lg" onClick={()=>setIsEditing(true)} >
+                                <button className="btn btn-danger btn-lg" onClick={()=>handleDeleteTask(index)} >
                                     <FaRegTrashCan />
                                 </button>
                             </div>
