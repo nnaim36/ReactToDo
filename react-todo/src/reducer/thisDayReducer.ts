@@ -5,10 +5,16 @@ interface TodoState{
     currentTask:string;
 }
 
+interface UpdateTaskPayload{
+    index:number;
+    updatedTask:string;
+}
+
 const initialState: TodoState = {
     todos:[],
     currentTask: '',
 }
+
 
 const thisDaySlice = createSlice({
     name:"genTodo",
@@ -42,9 +48,14 @@ const thisDaySlice = createSlice({
         clearTasks:(state) =>{
             state.todos = [];
         },
+        updateTask2:(state,action:PayloadAction<UpdateTaskPayload>)=>{
+            const index =action.payload.index;
+            const newTask = action.payload.updatedTask;
+            state.todos[index] = newTask;
+        },
     },
     
 });
 
-export const { addTask,deleteTask,upgradeTask,downgradeTask, clearTasks} = thisDaySlice.actions;
+export const { addTask,deleteTask,upgradeTask,downgradeTask, clearTasks, updateTask2} = thisDaySlice.actions;
 export default thisDaySlice.reducer;

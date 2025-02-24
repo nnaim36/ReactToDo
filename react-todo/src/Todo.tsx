@@ -7,10 +7,8 @@ import MondayToDo from "./MondayToDo";
 import TuesdayToDo from "./TuesdayToDo";
 
 import { useSelector, useDispatch } from "react-redux";
-import {addTask, deleteTask,upgradeTask,downgradeTask,clearTasks} from "./reducer/thisDayReducer"
+import {addTask, deleteTask,upgradeTask,downgradeTask,clearTasks,updateTask2} from "./reducer/thisDayReducer"
 import { RootState } from './store'
-
-
 
 import { FaChevronCircleDown } from "react-icons/fa";
 import { FaChevronCircleUp } from "react-icons/fa";
@@ -24,8 +22,6 @@ function Todo(){
     const dispatch = useDispatch();
     const todos = useSelector((state: RootState) => state.thisDayReducer.todos);
     const currentTask = useSelector((state: RootState) => state.thisDayReducer.currentTask);
-    
-    
     
     const handleAddTask = () => {
         if (task.trim() !== "") {
@@ -47,6 +43,18 @@ function Todo(){
     const handleClearTasks = () => {
         dispatch(clearTasks());
     }
+
+    
+    const handleUpdateTas2k = () =>{
+        if(tempTask.trim() !== ""){
+            dispatch(updateTask2({index:editIndex as number, updatedTask: tempTask}));
+            setTempTask("");
+            setIsEditing(false);
+            setEditIndex(null);
+        }
+    }
+    
+    
     
 
     const [taskList, setTaskList] = useState<string[]>([]);
@@ -55,9 +63,11 @@ function Todo(){
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
+    
     function updateTask(event:any){
         setTask(event.target.value);
     }
+    
 
     function updateTempTask(event: any) {
         setTempTask(event.target.value);
@@ -66,53 +76,9 @@ function Todo(){
     function editTask(index:number){
         setIsEditing(true);
         setEditIndex(index);
-        setTempTask(taskList[index]);
+        setTempTask(todos[index]);
     }
-    /*
-    function deleteTask(index: number){
-        const newTaskList = taskList.filter((_,i) => i !== index);
 
-        setTaskList(newTaskList)
-    }
-    */
-
-    /*
-    function upgradeTask(index: number){
-        const copylist = [...taskList]
-        
-        if( index > 0){
-            [copylist[index],copylist[index -1]] = [copylist[index-1],copylist[index]]
-            setTaskList(copylist)
-        }
-
-    }
-    */
-
-    /*
-    function downGradeTask(index:number){
-        const copylist = [...taskList]
-
-        if( index < taskList.length -1){
-            [copylist[index],copylist[index +1 ]] = [copylist[index+1], copylist[index]];
-            setTaskList(copylist);
-        }
-    }
-    */
-
-    /*
-    function addTask(){
-        setTaskList((prevTasks) => [...prevTasks,task]);
-        console.log(taskList);
-
-        setTask("");
-    }
-    */
-
-    /*
-    function clearTask(){
-        setTaskList([]);
-    }
-    */
 
     function saveEditedTask() {
         if (editIndex !== null) {
@@ -150,7 +116,7 @@ function Todo(){
                     className="form-control"
                     id="edit-task"
                 />
-                <button className="btn btn-warning" onClick={saveEditedTask}>Update</button>
+                <button className="btn btn-warning" onClick={handleUpdateTas2k}>Update</button>
                 <button className="btn btn-danger" onClick={() => setIsEditing(false)}>Cancel</button>
             </div>
             )}
